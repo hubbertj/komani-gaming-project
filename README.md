@@ -72,19 +72,24 @@ A robust client-server application that demonstrates XML processing, socket comm
    cd komani-gaming-project
    ```
 
-2. **📁 Navigate to project directory:**
+2. **📁 Navigate to the main project directory:**
    ```bash
-   cd "Konami Games Project"
+   cd "konami-games-project"
    ```
 
 3. **🔨 Compile the project:**
    ```bash
-   # Compile server classes
+   # Compile all source files (recommended)
    javac -d bin src/koanami/pack/*.java
    
-   # Or compile individual components
-   javac -d bin src/koanami/pack/GUIServer.java
-   javac -d bin src/koanami/pack/GUIClient.java
+   # Alternative: Compile specific components
+   javac -d bin src/koanami/pack/ThreadRunner.java src/koanami/pack/*.java
+   ```
+
+4. **✅ Verify compilation:**
+   ```bash
+   # Check that class files were created
+   ls bin/koanami/pack/
    ```
 
 ## 📖 Usage Guide
@@ -93,23 +98,37 @@ A robust client-server application that demonstrates XML processing, socket comm
 
 **🚀 Run both client and server together:**
 ```bash
-cd "Konami Games Project"
+# Make sure you're in the "konami-games-project" directory
+cd "konami-games-project"
+
+# Compile first (if not done already)
+javac -d bin src/koanami/pack/*.java
+
+# Run the threaded application
 java -cp bin koanami.pack.ThreadRunner
 ```
 
-This launches both applications in separate threads automatically.
+This launches both server and client applications in separate threads automatically.
 
 ### 🎯 Method 2: Separate Execution
 
 **🔧 1. Start the Server:**
 ```bash
-cd "Konami Games Project"
+# Navigate to project directory
+cd "konami-games-project"
+
+# Compile and run server
+javac -d bin src/koanami/pack/*.java
 java -cp bin koanami.pack.Main
 ```
 
 **💻 2. Start the Client (in new terminal):**
 ```bash
-cd "Konami Games Project"
+# Navigate to project directory (in new terminal)
+cd komani-gaming-project
+cd "konami-games-project"
+
+# Run client
 java -cp bin koanami.pack.MainOut
 ```
 
@@ -182,7 +201,7 @@ The server processes the XML and displays:
 
 ```
 komani-gaming-project/
-├── 📁 Konami Games Project/           # Main application
+├── 📁 konami-games-project/           # Main application
 │   ├── 📁 src/koanami/pack/           # Core source code
 │   │   ├── 🎮 ThreadRunner.java       # Multi-threaded launcher
 │   │   ├── 🖥️ GUIServer.java          # Server GUI & logic
@@ -193,9 +212,9 @@ komani-gaming-project/
 │   │   ├── 🚀 Main.java               # Server entry point
 │   │   └── 🚀 MainOut.java            # Client entry point
 │   └── 📁 bin/                        # Compiled classes
-├── 📁 Konami Games Project ClientSide/ # Standalone client
-├── 📁 Konami Games Project ServerSide/ # Standalone server
-├── 📁 XML Test/                       # XML parsing examples
+├── 📁 konami-games-project-clientside/ # Standalone client
+├── 📁 konami-games-project-serverside/ # Standalone server
+├── 📁 xml-test/                       # XML parsing examples
 ├── 🚫 .gitignore                      # Git ignore rules
 └── 📖 README.md                       # This documentation
 ```
@@ -205,27 +224,56 @@ komani-gaming-project/
 ### 🏗️ Building from Source
 
 ```bash
+# Navigate to the main project directory
+cd "konami-games-project"
+
 # Create bin directory if it doesn't exist
-mkdir -p "Konami Games Project/bin"
+mkdir -p bin
 
 # Compile all source files
-find "Konami Games Project/src" -name "*.java" | xargs javac -d "Konami Games Project/bin"
+javac -d bin src/koanami/pack/*.java
+
+# Alternative: Compile all Java files recursively
+find src -name "*.java" | xargs javac -d bin
+
+# Verify compilation
+ls -la bin/koanami/pack/
 ```
 
 ### 🧪 Testing XML Parser
 
 ```bash
-cd "XML Test"
+# Test the standalone XML parser
+cd "xml-test"
 javac -d bin src/*.java
 java -cp bin ParseXMLString
+
+# Or test the main parser
+java -cp bin Main
 ```
 
 ### 🐛 Debugging Tips
 
+- **📁 Directory Issues:** Always run commands from "konami-games-project" directory
 - **🔌 Port Issues:** Use ports 1024-65535 (avoid system ports)
-- **🌐 Connection Failed:** Check firewall settings
+- **🌐 Connection Failed:** Check firewall settings and ensure server is running
 - **📄 XML Errors:** Validate XML format with quotes around values
 - **🧵 Threading:** Monitor console for thread status messages
+- **☕ Java Path:** Ensure Java is in your PATH: `java -version`
+
+### 🔧 Common Commands Summary
+
+```bash
+# Quick start (from project root)
+cd komani-gaming-project
+cd "konami-games-project"
+javac -d bin src/koanami/pack/*.java
+java -cp bin koanami.pack.ThreadRunner
+
+# Individual components
+java -cp bin koanami.pack.Main      # Server only
+java -cp bin koanami.pack.MainOut   # Client only
+```
 
 ---
 
