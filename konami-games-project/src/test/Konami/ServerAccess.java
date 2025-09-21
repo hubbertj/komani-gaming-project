@@ -4,51 +4,35 @@ import java.io.*;
 import java.net.*;
 
 public class ServerAccess {
-	
-	Socket connectSocket = null;
-    PrintWriter out = null;
-    BufferedReader in = null;
-    String ServerIp;
-    int ServerPort;
-	
-	public ServerAccess(String inputServerIp, int inputServerPort){
-		
-		this.ServerIp = inputServerIp;
-		
-		this.ServerPort = inputServerPort;
-		
-	}
-		
-	public void connect(GUIClient GUI) throws IOException{	
+    private final String serverIp;
+    private final int serverPort;
 
-        try {
-            connectSocket = new Socket(ServerIp, ServerPort);
-            out = new PrintWriter(connectSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(
-                                        connectSocket.getInputStream()));
+    public ServerAccess(String serverIp, int serverPort) {
+        this.serverIp = serverIp;
+        this.serverPort = serverPort;
+    }
+
+    public void connect(GUIClient gui) {
+        try (
+            Socket socket = new Socket(serverIp, serverPort);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
+        ) {
+            String clientInput;
+            while ((clientInput = stdIn.readLine()) != null) {
+                out.println(clientInput);
+                String response = in.readLine();
+                if (response != null) {
+                    System.out.println("Writing: " + response);
+                } else {
+                    break;
+                }
+            }
         } catch (UnknownHostException e) {
-            System.err.println("Cannot Connect to server");
-            //System.exit(1);
+            System.err.println("Cannot connect to server: " + serverIp);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for "
-                               + "the connection to: " + ServerIp.toString());
-           // System.exit(1);
+            System.err.println("I/O error with connection to: " + serverIp);
         }
-
-	BufferedReader stdIn = new BufferedReader(
-                                   new InputStreamReader(System.in));
-	
-	String clientInput = GUI.getJTareaOut().getText();
-
-	while ((clientInput = stdIn.readLine())!= null) {
-	    out.println(clientInput);
-	    System.out.println("Writing: " + in.readLine());
-	}
-
-	out.close();
-	in.close();
-	stdIn.close();
-	connectSocket.close();
-	
     }
 }

@@ -5,71 +5,70 @@ import java.io.*;
 
 public class SocketLis {
 
-// SocketLis is used to make a socket object for connections	
-	
-	public String readIn = "";
-	public Socket sock;
-	public ServerSocket serverConnect;
-	public String XML = "";
-	public PrintWriter printS;
+	private String readIn = "";
+	private Socket sock;
+	private ServerSocket serverConnect;
+	private StringBuilder xmlBuilder = new StringBuilder();
+	private PrintWriter printS;
 	private boolean controlVar;
-	
-	public SocketLis(){
-		super();
+
+	public SocketLis() {
+		// Default constructor
 	}
-	
-// Used for closing the socket
-	
-	public void close() throws IOException{
-		sock.close();
-		serverConnect.close();
-		printS.close();
+
+	// Used for closing the socket and streams
+	public void close() {
+		try {
+			if (printS != null) printS.close();
+			if (sock != null && !sock.isClosed()) sock.close();
+			if (serverConnect != null && !serverConnect.isClosed()) serverConnect.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public String getReadIn() {
 		return readIn;
 	}
-	
+
 	public void setReadIn(String readIn) {
 		this.readIn = readIn;
 	}
 
 	public String getXML() {
-		return XML;
+		return xmlBuilder.toString();
 	}
 
-	public void setXML(String xML) {
-		XML = xML;
+	public void setXML(String xml) {
+		xmlBuilder = new StringBuilder(xml);
 	}
 
-//main connection method
-	
-	public void listen(GUIServer gs) throws IOException{
+	// Main connection method
+	public void listen(GUIServer gs) throws IOException {
 		controlVar = true;
-		serverConnect = new 
-				ServerSocket(gs.getServerPortNumber());
-		sock = serverConnect.accept();
-		BufferedReader inside = new 
-				BufferedReader(new InputStreamReader(sock.getInputStream()));
-		
-		while (controlVar){
-			readIn = inside.readLine();
-				if(readIn == null){
-					controlVar = false;
-				}else{
-					XML += readIn;
-				}
-		}
-	
-//This should write out to the client.		
-		try {
-			Thread.sleep(2000);
-			printS = new PrintWriter(sock.getOutputStream());
-			printS.println("Confirmed: Message has been recieved");
-			
-		} catch (InterruptedException e) {
-			System.out.println("Sleep Thread");
-			
+		serverConnect = new ServerSocket(gs.getServerPortNumber());
+		try (Socket clientSocket = serverConnect.accept();
+			 BufferedReader inside = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+
+			sock = clientSocket;
+			printS = out;
+
+			String line;
+			while (controlVar && (line = inside.readLine()) != null) {
+				readIn = line;
+				xmlBuilder.append(line);
+			}
+
+			// Write out to the client
+			try {
+				Thread.sleep(2000);
+				out.println("Confirmed: Message has been received");
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		} finally {
+			close();
 		}
 	}
 }

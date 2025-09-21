@@ -5,100 +5,92 @@ import java.io.*;
 
 public class SocketLis implements Runnable {
 
-// SocketLis is used to make a socket object for connections	
-	
-	public String readIn = "";
-	public Socket sock;
-	public ServerSocket serverConnect;
-	public String XML = "";
-	public PrintWriter printS;
-	private boolean controlVar;
-	GUIServer gs;
-	BufferedReader inside;
-	
-	public SocketLis(GUIServer gs){
-		
-		super();
+	private volatile boolean running = true;
+	private String readIn = "";
+	private String XML = "";
+	private Socket sock;
+	private ServerSocket serverConnect;
+	private PrintWriter printS;
+	private GUIServer gs;
+	private BufferedReader inside;
+
+	public SocketLis(GUIServer gs) {
 		this.gs = gs;
-}
-	
-// Used for closing the socket
-	
-	public void close() throws IOException{
-		sock.close();
-		serverConnect.close();
-		printS.close();
-}
-	
+	}
+
+	// Close resources safely
+	public void close() {
+		running = false;
+		try {
+			if (sock != null && !sock.isClosed()) sock.close();
+			if (serverConnect != null && !serverConnect.isClosed()) serverConnect.close();
+			if (printS != null) printS.close();
+			if (inside != null) inside.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public String getReadIn() {
 		return readIn;
-}
-	
+	}
+
 	public void setReadIn(String readIn) {
 		this.readIn = readIn;
-}
+	}
 
 	public String getXML() {
 		return XML;
-}
+	}
 
-	public void setXML(String xML) {
-		XML = xML;
-}
+	public void setXML(String XML) {
+		this.XML = XML;
+	}
 
-//main connection method
-	
-	public void run(){
-		controlVar = true;
-		
-		try{
-		serverConnect = new 
-				ServerSocket(gs.getServerPortNumber());
-		
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		
-//This should write out to the client and read from it infinite amount of times.	
-		
-		for(;;){
+	@Override
+	public void run() {
 		try {
-			sock = serverConnect.accept();
-			inside = new 
-					BufferedReader(new InputStreamReader(sock.getInputStream()));
-			printS = new PrintWriter(sock.getOutputStream(), true);
-				while (controlVar){
-					readIn = inside.readLine();
-// I use "END" to mark my EOF
-						if(readIn.equals("END")){
-							controlVar = false;
-							gs.clear();
-							printS.println("Confirmed: Message has been recieved, come again!");
-							printS.println("END");
-							
-						}else{
-							XML += readIn;
-						}
+			serverConnect = new ServerSocket(gs.getServerPortNumber());
+			while (running) {
+				try (Socket clientSocket = serverConnect.accept();
+					 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+					 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
-						
+					this.sock = clientSocket;
+					this.inside = in;
+					this.printS = out;
+					StringBuilder xmlBuilder = new StringBuilder();
+
+					while (running && (readIn = in.readLine()) != null) {
+						if ("END".equals(readIn)) {
+							gs.clear();
+							out.println("Confirmed: Message has been received, come again!");
+							out.println("END");
+							break;
+						} else {
+							xmlBuilder.append(readIn);
+						}
 					}
-// Processes the XML				
-				XmlReceived xml = new XmlReceived(XML,gs);
-				xml.process();
-				gs.setmyLayout(xml.getMyStrings(), xml.getMyAdd(), xml.getxmlCommand());
-				
-//Resets all looping variables				
-				controlVar = true;
-				readIn = "";
-				XML = "";
-				
-				
-		
-		}catch(IOException e){
-			
-		}
-		
-		
+
+					XML = xmlBuilder.toString();
+
+					// Process the XML
+					XmlReceived xml = new XmlReceived(XML, gs);
+					xml.process();
+					gs.setmyLayout(xml.getMyStrings(), xml.getMyAdd(), xml.getxmlCommand());
+
+					// Reset variables
+					readIn = "";
+					XML = "";
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			close();
 		}
 	}
 }

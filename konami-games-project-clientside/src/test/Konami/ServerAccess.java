@@ -4,14 +4,19 @@ import java.io.*;
 import java.net.*;
 
 public class ServerAccess {
-	
-	public Socket connectSocket;
-	public PrintWriter out;
-    private String serverIp;
-    private int serverPort;
-    public BufferedReader myBR;
-    private String myServerString;
-	
+
+	private Socket connectSocket;
+	private PrintWriter out;
+	private BufferedReader myBR;
+	private String serverIp;
+	private int serverPort;
+	private String myServerString;
+
+	public ServerAccess(String serverIp, int serverPort) {
+		this.serverIp = serverIp;
+		this.serverPort = serverPort;
+	}
+
 	public String getMyServerString() {
 		return myServerString;
 	}
@@ -20,30 +25,20 @@ public class ServerAccess {
 		this.myServerString = myServerString;
 	}
 
-	public ServerAccess(String inputserverIp, int inputserverPort){
-		
-		this.serverIp = inputserverIp;	
-		this.serverPort = inputserverPort;
-		
-}
-		
-	public void connect(GUIClient GUI, String outPutText) throws UnknownHostException, IOException{	
-
-//connection objects for writing and reading from the server 
-		
-      connectSocket = new Socket(serverIp, serverPort);
-      
-      out = new PrintWriter(connectSocket.getOutputStream(), true);
-      out.println(outPutText);
-      out.close();
-      
-      myBR = new BufferedReader(new InputStreamReader(connectSocket.getInputStream()));
-      //myServerString = myBR.readLine();        	
-}
-
-// used for closing the socket	
-	public void connectClose() throws IOException{
-		connectSocket.close();
-		myBR.close();
+	public void connect(String outPutText) throws IOException {
+		connectSocket = new Socket(serverIp, serverPort);
+		try (
+			PrintWriter out = new PrintWriter(connectSocket.getOutputStream(), true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(connectSocket.getInputStream()))
+		) {
+			out.println(outPutText);
+			myServerString = in.readLine();
+		}
 	}
- }
+
+	public void connectClose() throws IOException {
+		if (connectSocket != null && !connectSocket.isClosed()) {
+			connectSocket.close();
+		}
+	}
+}

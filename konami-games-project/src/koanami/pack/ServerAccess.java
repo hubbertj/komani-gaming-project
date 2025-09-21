@@ -4,82 +4,68 @@ import java.io.*;
 import java.net.*;
 
 public class ServerAccess implements Runnable {
-	
-	public Socket connectSocket;
-	public PrintWriter out;
-    private String serverIp;
-    private int serverPort;
-    public GUIClient gui;
-    String myServerString = "";
-    BufferedReader myBR;
-    
-    
 
-	public ServerAccess(String inputserverIp, int inputserverPort, GUIClient gui) throws UnknownHostException, IOException{
-		
-		this.serverIp = inputserverIp;	
-		this.serverPort = inputserverPort;
+	private Socket connectSocket;
+	private PrintWriter out;
+	private BufferedReader in;
+	private final String serverIp;
+	private final int serverPort;
+	private final GUIClient gui;
+	private volatile boolean running = true;
+
+	public ServerAccess(String serverIp, int serverPort, GUIClient gui) {
+		this.serverIp = serverIp;
+		this.serverPort = serverPort;
 		this.gui = gui;
-		
-		
-}
-	public String getmyServerString (){
-		return myServerString;
-}
+	}
 
-//connection objects for writing and reading from the server 
-	public void out(String outPutText) throws IOException{	
-		connectSocket = new Socket(serverIp, serverPort);
-		out = new PrintWriter(connectSocket.getOutputStream(), true);
-		out.println(outPutText);
-	    out.println("END");
-	    
-//Receiving information from the server.	    		     
-} 
-	
-	public void run(){
-	boolean br = true;
-	String tmp = "";
-	
-	
-//My write and read loop
-	
-	for (;;){
-	try{
-		myBR = new BufferedReader(new InputStreamReader(connectSocket.getInputStream())); 
-					while(br){
-						tmp = myBR.readLine();
-//I used "END" to mark my EOF						
-						if(tmp.equals("END")){
-							br = false;
-						}else{
-							myServerString += tmp;	
-							
-						}
-					}
-					
-// Writes to responds text area and resets Looping variables.
-					
-			gui.gettextAreaRespond().append("\n" + myServerString);
-			br = true;
-			tmp = "";
-			myServerString = "";
-				
-			
-		
-		}catch(IOException e){
+	public synchronized void send(String message) throws IOException {
+		if (connectSocket == null || connectSocket.isClosed()) {
+			connectSocket = new Socket(serverIp, serverPort);
+			out = new PrintWriter(connectSocket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(connectSocket.getInputStream()));
+		}
+		out.println(message);
+		out.println("END");
+	}
+
+	@Override
+	public void run() {
+		try {
+			if (connectSocket == null || connectSocket.isClosed()) {
+				connectSocket = new Socket(serverIp, serverPort);
+				out = new PrintWriter(connectSocket.getOutputStream(), true);
+				in = new BufferedReader(new InputStreamReader(connectSocket.getInputStream()));
+			}
+			StringBuilder serverResponse = new StringBuilder();
+			String line;
+			while (running && (line = in.readLine()) != null) {
+				if ("END".equals(line)) {
+					gui.gettextAreaRespond().append("\n" + serverResponse.toString());
+					serverResponse.setLength(0);
+				} else {
+					serverResponse.append(line);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			closeConnections();
+		}
+	}
+
+	public void stop() {
+		running = false;
+		closeConnections();
+	}
+
+	private void closeConnections() {
+		try {
+			if (out != null) out.close();
+			if (in != null) in.close();
+			if (connectSocket != null && !connectSocket.isClosed()) connectSocket.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	}	
-		
 	}
-			
-// used for closing the socket	
-	public void connectClose() throws IOException{
-		connectSocket.close();
-		out.close();
-		myBR.close();
-			
-	}
- }
+}

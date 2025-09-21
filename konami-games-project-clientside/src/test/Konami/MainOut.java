@@ -1,13 +1,8 @@
 package test.Konami;
 
-public class MainOut extends Thread {
-	
+public class MainOut {
 	public static void main(String[] args) {
-		
-		GUIClient GUI = new GUIClient("Client Side");
-		
-		GUI.go();	
-
+		GUIClient gui = new GUIClient("Client Side");
+		gui.go();
 	}
-
 }

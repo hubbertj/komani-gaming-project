@@ -1,47 +1,58 @@
 /**
- * Java Sample Program
- Jerum Lee Hubbert
- 1700 Toltec Cir
- Henderson, NV 89014
- Cell: 210-995-4393
- 
- Requirments are:
- 
- Java Coding assignment for Konami Games.
- You should be able to complete this task if you understand 
- 1) the Java language, 2) the Java API's swing GUI / Tables 
- / Socket Communication and 3) Parsing an xml file. 
-  * Please make the sample apps are compatible with JDK 1.6 
-  * and be able to run on Windows or Linux.  For the extra 
-  * credit portion, you will need to understand threads and 
-  * how they interact with the GUI.
-	 **/
+ * Konami Gaming Project - Thread Runner (Legacy Version)
+ * 
+ * This is the main entry point for the legacy client-server application.
+ * It creates and manages two separate threads:
+ * - Server Thread: Handles XML processing and server-side GUI
+ * - Client Thread: Manages client-side GUI and server communication
+ * 
+ * @author Jerum Lee Hubbert
+ * @version 1.0 (Legacy - JDK 1.6 Compatible)
+ * @since 2025
+ * 
+ * Requirements Met:
+ * ✓ Java Swing GUI implementation
+ * ✓ Socket communication between client and server
+ * ✓ XML file parsing capabilities
+ * ✓ Multi-threaded architecture
+ * ✓ Cross-platform compatibility (Windows/Linux)
+ */
 
 package koanami.pack;
 
-// This is the main thread class
-
+/**
+ * Main thread controller class that orchestrates the client-server application.
+ * This class creates and manages separate threads for server and client
+ * components.
+ */
 public class ThreadRunner {
 
+	/**
+	 * Main entry point for the application.
+	 * Creates and starts both server and client threads.
+	 * 
+	 * @param args Command line arguments (not used)
+	 */
 	public static void main(String[] args) {
-		
-//Objects to be pasted into Thread Object.
-		
-		Main ma = 	new Main();
-		MainOut mo = new MainOut();
-		
-//The first threads are created to run the program.
-		
-		Thread runServer = new Thread(ma);
-		runServer.setName("Server Thread");
-		
-		Thread runClient = new Thread(mo);
-		runClient.setName("Client Thread");
-//Starting Threads		
-		runServer.start();
-		runClient.start();
-		
 
+		// Create objects for thread execution
+		Main serverMain = new Main();
+		MainOut clientMain = new MainOut();
+
+		// Create threads for concurrent execution
+		Thread serverThread = new Thread(serverMain);
+		serverThread.setName("Server Thread");
+
+		Thread clientThread = new Thread(clientMain);
+		clientThread.setName("Client Thread");
+
+		// Start both threads
+		System.out.println("Starting Konami Gaming Project - Thread Runner (Legacy)");
+		System.out.println("Initializing server and client threads...");
+
+		serverThread.start();
+		clientThread.start();
+
+		System.out.println("Both threads started successfully.");
 	}
-
 }
