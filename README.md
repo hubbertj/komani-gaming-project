@@ -24,16 +24,20 @@ A robust client-server application that demonstrates XML processing, socket comm
 - 🌐 **Socket-based Communication** - Real-time client-server messaging
 - 📄 **XML Message Processing** - Parse and display structured XML data
 - 🖥️ **Multi-threaded Architecture** - Concurrent server and client operations
-- 🎨 **Java Swing GUI** - User-friendly graphical interfaces
+- 🎨 **Modern Java Swing GUI** - User-friendly graphical interfaces with improved UX
 - 🔄 **Real-time Updates** - Live data visualization on server grid
 - 🛡️ **Input Validation** - Comprehensive error handling and validation
+- 📝 **Logging System** - Built-in logging for debugging and monitoring
+- 🏗️ **Modern Architecture** - Clean separation of concerns with proper packages
 
 💡 **Technical Highlights:**
-- Thread-safe socket communication
-- DOM-based XML parsing
-- Event-driven GUI components
-- Configurable network settings
-- Cross-platform compatibility
+- Thread-safe socket communication with proper resource management
+- Secure DOM-based XML parsing with input validation
+- Event-driven GUI components with modern styling
+- Configurable network settings with constants
+- Cross-platform compatibility (Java 8+)
+- Try-with-resources for automatic resource management
+- Modern package structure following Java conventions
 
 ## 🏗️ Architecture
 
@@ -60,9 +64,25 @@ A robust client-server application that demonstrates XML processing, socket comm
 
 ### 📋 Prerequisites
 
-- ☕ **Java JDK 1.6+** (Compatible with modern Java versions)
+- ☕ **Java JDK 8+** (Modernized version compatible with Java 8-21)
 - 🖥️ **Operating System:** Windows, Linux, or macOS
 - 💾 **Memory:** 512MB RAM minimum
+
+### 🎯 What's New in the Modernized Version
+
+🆕 **Modern Java Features:**
+- ✅ **Proper Package Structure** - `com.konami.gaming.*` packages
+- ✅ **Try-with-Resources** - Automatic resource management
+- ✅ **Enhanced Logging** - Built-in Java logging instead of System.out
+- ✅ **Input Validation** - Comprehensive error checking
+- ✅ **Security Improvements** - Secure XML parsing with XXE protection
+- ✅ **Modern GUI** - Improved Swing components with better UX
+- ✅ **Thread Safety** - Proper synchronization and volatile variables
+- ✅ **Constants Class** - Centralized configuration management
+
+🔄 **Both Legacy and Modern Versions Available:**
+- **Modernized Code:** `src/com/konami/gaming/` (recommended)
+- **Legacy Code:** `src/koanami/pack/` (for reference)
 
 ### ⚡ Installation & Setup
 
@@ -72,19 +92,24 @@ A robust client-server application that demonstrates XML processing, socket comm
    cd komani-gaming-project
    ```
 
-2. **📁 Navigate to project directory:**
+2. **📁 Navigate to the main project directory:**
    ```bash
-   cd "Konami Games Project"
+   cd "konami-games-project"
    ```
 
 3. **🔨 Compile the project:**
    ```bash
-   # Compile server classes
-   javac -d bin src/koanami/pack/*.java
+   # Compile modernized code (recommended)
+   javac -d bin src/com/konami/gaming/*/*.java
    
-   # Or compile individual components
-   javac -d bin src/koanami/pack/GUIServer.java
-   javac -d bin src/koanami/pack/GUIClient.java
+   # Alternative: Compile legacy code
+   javac -d bin src/koanami/pack/*.java
+   ```
+
+4. **✅ Verify compilation:**
+   ```bash
+   # Check that class files were created
+   ls bin/koanami/pack/
    ```
 
 ## 📖 Usage Guide
@@ -93,23 +118,37 @@ A robust client-server application that demonstrates XML processing, socket comm
 
 **🚀 Run both client and server together:**
 ```bash
-cd "Konami Games Project"
+# Make sure you're in the "konami-games-project" directory
+cd "konami-games-project"
+
+# Compile modernized code first (if not done already)
+javac -d bin src/com/konami/gaming/*/*.java
+
+# Run the modernized threaded application (recommended)
+java -cp bin com.konami.gaming.common.ThreadRunner
+
+# Alternative: Run legacy version
 java -cp bin koanami.pack.ThreadRunner
 ```
 
-This launches both applications in separate threads automatically.
+This launches both server and client applications in separate threads automatically.
 
-### 🎯 Method 2: Separate Execution
+### 🎯 Method 2: Individual Components (Not Recommended)
 
-**🔧 1. Start the Server:**
+> ⚠️ **Note**: The modernized server and client components are designed as `Runnable` classes and do not have individual `main` methods. Use the ThreadRunner for proper execution.
+
+**� Legacy Individual Execution Only:**
 ```bash
-cd "Konami Games Project"
+# Navigate to project directory
+cd "konami-games-project"
+
+# Compile legacy code
+javac -d bin src/koanami/pack/*.java
+
+# Run legacy server
 java -cp bin koanami.pack.Main
-```
 
-**💻 2. Start the Client (in new terminal):**
-```bash
-cd "Konami Games Project"
+# Run legacy client (in new terminal)
 java -cp bin koanami.pack.MainOut
 ```
 
@@ -182,20 +221,26 @@ The server processes the XML and displays:
 
 ```
 komani-gaming-project/
-├── 📁 Konami Games Project/           # Main application
-│   ├── 📁 src/koanami/pack/           # Core source code
-│   │   ├── 🎮 ThreadRunner.java       # Multi-threaded launcher
-│   │   ├── 🖥️ GUIServer.java          # Server GUI & logic
-│   │   ├── 💻 GUIClient.java          # Client GUI & logic
-│   │   ├── 🔌 SocketLis.java          # Server socket handler
-│   │   ├── 📤 ServerAccess.java       # Client connection handler
-│   │   ├── 📄 XmlReceived.java        # XML parser & processor
-│   │   ├── 🚀 Main.java               # Server entry point
-│   │   └── 🚀 MainOut.java            # Client entry point
+├── 📁 konami-games-project/           # Main application
+│   ├── 📁 src/com/konami/gaming/      # Modernized source code
+│   │   ├── 📁 common/                 # Shared utilities and constants
+│   │   │   ├── 🎮 ThreadRunner.java   # Multi-threaded launcher
+│   │   │   └── � NetworkConstants.java # Network configuration
+│   │   ├── 📁 server/                 # Server-side components
+│   │   │   ├── �️ GUIServer.java      # Server GUI & logic
+│   │   │   ├── 🔌 SocketListener.java  # Server socket handler
+│   │   │   └── � ServerMain.java     # Server entry point
+│   │   ├── 📁 client/                 # Client-side components
+│   │   │   ├── � GUIClient.java      # Client GUI & logic
+│   │   │   ├── � ServerConnector.java # Client connection handler
+│   │   │   └── 🚀 ClientMain.java     # Client entry point
+│   │   └── � xml/                    # XML processing
+│   │       └── 📄 XmlProcessor.java   # XML parser & processor
+│   ├── 📁 src/koanami/pack/           # Legacy source code (for reference)
 │   └── 📁 bin/                        # Compiled classes
-├── 📁 Konami Games Project ClientSide/ # Standalone client
-├── 📁 Konami Games Project ServerSide/ # Standalone server
-├── 📁 XML Test/                       # XML parsing examples
+├── 📁 konami-games-project-clientside/ # Standalone client
+├── 📁 konami-games-project-serverside/ # Standalone server
+├── 📁 xml-test/                       # XML parsing examples
 ├── 🚫 .gitignore                      # Git ignore rules
 └── 📖 README.md                       # This documentation
 ```
@@ -205,27 +250,92 @@ komani-gaming-project/
 ### 🏗️ Building from Source
 
 ```bash
-# Create bin directory if it doesn't exist
-mkdir -p "Konami Games Project/bin"
+# Navigate to the main project directory
+cd "konami-games-project"
 
-# Compile all source files
-find "Konami Games Project/src" -name "*.java" | xargs javac -d "Konami Games Project/bin"
+# Create bin directory if it doesn't exist
+mkdir -p bin
+
+# Compile modernized source files (recommended)
+javac -d bin src/com/konami/gaming/*/*.java
+
+# Alternative: Compile legacy source files
+javac -d bin src/koanami/pack/*.java
+
+# Alternative: Compile all Java files recursively
+find src -name "*.java" | xargs javac -d bin
+
+# Verify compilation
+ls -la bin/com/konami/gaming/*/
 ```
 
 ### 🧪 Testing XML Parser
 
 ```bash
-cd "XML Test"
+# Test the standalone XML parser
+cd "xml-test"
 javac -d bin src/*.java
 java -cp bin ParseXMLString
+
+# Or test the main parser
+java -cp bin Main
 ```
 
 ### 🐛 Debugging Tips
 
+- **📁 Directory Issues:** Always run commands from "konami-games-project" directory
 - **🔌 Port Issues:** Use ports 1024-65535 (avoid system ports)
-- **🌐 Connection Failed:** Check firewall settings
+- **🌐 Connection Failed:** Check firewall settings and ensure server is running
 - **📄 XML Errors:** Validate XML format with quotes around values
 - **🧵 Threading:** Monitor console for thread status messages
+- **☕ Java Path:** Ensure Java is in your PATH: `java -version`
+- **⚠️ Main Method Errors:** Use `ThreadRunner` classes, not individual Server/Client classes
+- **🔄 Modern vs Legacy:** Modernized components require ThreadRunner; legacy components can run individually
+
+### 🔧 Common Commands Summary
+
+```bash
+# Quick start with modernized code (from project root)
+cd komani-gaming-project
+cd "konami-games-project"
+javac -d bin src/com/konami/gaming/*/*.java
+java -cp bin com.konami.gaming.common.ThreadRunner
+
+# ⚠️ Note: Individual modernized components cannot be run standalone
+# They are designed as Runnable classes for the ThreadRunner
+
+# Legacy components (for reference)
+java -cp bin koanami.pack.ThreadRunner  # Legacy threaded app
+java -cp bin koanami.pack.Main          # Legacy server only
+java -cp bin koanami.pack.MainOut       # Legacy client only
+```
+
+### 🚀 Execution Examples
+
+**✅ Correct - Modernized Threaded Application:**
+```bash
+java -cp bin com.konami.gaming.common.ThreadRunner
+```
+Output:
+```
+INFO: Starting Konami Gaming Project - Thread Runner
+INFO: Starting server thread...
+INFO: Starting client thread...
+INFO: Both threads started successfully
+INFO: Client GUI initialized and ready
+INFO: Server GUI initialized and ready
+```
+
+**✅ Correct - Legacy Threaded Application:**
+```bash
+java -cp bin koanami.pack.ThreadRunner
+```
+
+**❌ Incorrect - Individual Modernized Components:**
+```bash
+java -cp bin com.konami.gaming.server.ServerMain
+# Error: Main method not found - use ThreadRunner instead
+```
 
 ---
 
