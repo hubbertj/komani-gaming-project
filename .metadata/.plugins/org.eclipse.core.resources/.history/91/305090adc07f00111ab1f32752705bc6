@@ -1,9 +1,0 @@
-package test.Konami;
-
-public class Main {
-	
-	GUIServer sgui = new GUIServer("Server Side Program");
-	sgui.go();
-	
-
-}

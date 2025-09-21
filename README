@@ -1,9 +1,0 @@
-Discloser: This project / code is for the purpose of undestanding Java and XML. This project was not conducted / created during employment at the Konami coperation nor does it contain any source code for any Konami project.
-
-
-This is a project is a test which Konami Games has provided. It a little hard but can be compelted by a mid-level Java Programmer. This program is nothing more then a client/Server XML processers. If you feel this could be pretty useful in your work/project feel free to grab it. The way the program works is you start up the Server Application and choose a port, pick a port above 1000 but under 7000 so, 1000 - 7000. Start the client program up, apply your xml in the text area provided, enter your port/ ip information (if you dont know it go get it). Hit the send message button, once you hit it the XML will be sent via socket /datastream to the server program. The server program will process the XML, either display the output into its gird display or simple output it to the console. Thank you for read/looking at this project if you would like to hire me or chat feel free to message me. Have a good day gitHub.
-
-Enjoy!
-
-
-

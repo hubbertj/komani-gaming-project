@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename Java project &apos;Konami Games Project&apos; to &apos;Konami Games Project ClientSide&apos;&#x0A;- Original element: &apos;Konami Games Project&apos;&#x0A;- Renamed element: &apos;Konami Games Project&apos;&#x0A;- Update references to refactored element" description="Rename Java project &apos;Konami Games Project&apos;" flags="7" id="org.eclipse.jdt.ui.rename.java.project" input="=Konami Games Project" name="Konami Games Project ClientSide" references="true" stamp="1333698446080" version="1.0"/>
-</session>
