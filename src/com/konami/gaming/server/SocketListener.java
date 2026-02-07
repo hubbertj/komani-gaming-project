@@ -3,8 +3,13 @@ package com.konami.gaming.server;
 import com.konami.gaming.xml.XmlProcessor;
 import com.konami.gaming.common.NetworkConstants;
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -56,8 +61,9 @@ public class SocketListener implements Runnable {
                     Socket clientSocket = server.accept();
                     LOGGER.info("Client connected: " + clientSocket.getRemoteSocketAddress());
                     
-                    // Handle client in separate method
-                    handleClient(clientSocket);
+                    // Handle each client in a separate thread so we can accept more connections
+                    Thread clientHandler = new Thread(() -> handleClient(clientSocket), "Server-Client-Handler");
+                    clientHandler.start();
                     
                 } catch (SocketTimeoutException e) {
                     // Timeout is expected, continue checking if we should still run
@@ -96,7 +102,7 @@ public class SocketListener implements Runnable {
                     messageComplete = true;
                     break;
                 }
-                xmlData.append(line).append("\\n");
+                xmlData.append(line).append("\n");
             }
             
             if (messageComplete && xmlData.length() > 0) {
@@ -106,12 +112,14 @@ public class SocketListener implements Runnable {
                 // Send confirmation to client
                 writer.println(NetworkConstants.CONFIRMATION_MESSAGE);
                 writer.println(NetworkConstants.END_MARKER);
+                writer.flush();
                 
                 LOGGER.info("XML message processed and response sent");
             } else {
                 LOGGER.warning("Incomplete or empty message received");
                 writer.println(NetworkConstants.ERROR_MESSAGE);
                 writer.println(NetworkConstants.END_MARKER);
+                writer.flush();
             }
             
         } catch (IOException e) {
@@ -125,15 +133,9 @@ public class SocketListener implements Runnable {
      */
     private void processXmlMessage(String xmlData) {
         try {
-            XmlProcessor xmlProcessor = new XmlProcessor(xmlData, guiServer);
+            XmlProcessor xmlProcessor = new XmlProcessor(xmlData);
             xmlProcessor.process();
-            
-            // Update GUI with processed data
-            String[] names = xmlProcessor.getNames();
-            String[] addresses = xmlProcessor.getAddresses();
-            String command = xmlProcessor.getCommand();
-            
-            guiServer.updateGridDisplay(names, addresses, command);
+            guiServer.updateDisplay(xmlProcessor.getCommand(), xmlProcessor.getKeyValuePairs());
             
             LOGGER.info("XML message processed successfully");
             

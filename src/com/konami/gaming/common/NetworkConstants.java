@@ -14,7 +14,7 @@ public final class NetworkConstants {
     public static final int DEFAULT_PORT = 8080;
     
     // Connection constants
-    public static final int CONNECTION_TIMEOUT = 5000; // 5 seconds
+    public static final int CONNECTION_TIMEOUT = 3000; // 3 seconds
     public static final int SOCKET_TIMEOUT = 10000; // 10 seconds
     
     // Protocol constants

@@ -62,55 +62,29 @@ A robust client-server application that demonstrates XML processing, socket comm
 
 ## 🚀 Quick Start
 
-### 📋 Prerequisites
+### Prerequisites
 
-- ☕ **Java JDK 8+** (Modernized version compatible with Java 8-21)
-- 🖥️ **Operating System:** Windows, Linux, or macOS
-- 💾 **Memory:** 512MB RAM minimum
+- **Java JDK 11+**
+- **Maven 3.6+**
+- **JavaFX** (included via OpenJFX dependency)
+- Windows, Linux, or macOS
 
-### 🎯 What's New in the Modernized Version
+### Run the Demo
 
-🆕 **Modern Java Features:**
-- ✅ **Proper Package Structure** - `com.konami.gaming.*` packages
-- ✅ **Try-with-Resources** - Automatic resource management
-- ✅ **Enhanced Logging** - Built-in Java logging instead of System.out
-- ✅ **Input Validation** - Comprehensive error checking
-- ✅ **Security Improvements** - Secure XML parsing with XXE protection
-- ✅ **Modern GUI** - Improved Swing components with better UX
-- ✅ **Thread Safety** - Proper synchronization and volatile variables
-- ✅ **Constants Class** - Centralized configuration management
+```bash
+./build.sh run
+```
 
-🔄 **Both Legacy and Modern Versions Available:**
-- **Modernized Code:** `src/com/konami/gaming/` (recommended)
-- **Legacy Code:** `src/koanami/pack/` (for reference)
+Or with Maven (recommended – uses proper module path):
+```bash
+mvn javafx:run
+```
 
-### ⚡ Installation & Setup
+**Two windows will open:**
+1. **Server** – Click "Start Server" (port 8080 is pre-filled)
+2. **Client** – Enter XML, then click "Send Message" (localhost:8080 is pre-filled)
 
-1. **📥 Clone the repository:**
-   ```bash
-   git clone https://github.com/hubbertj/komani-gaming-project.git
-   cd komani-gaming-project
-   ```
-
-2. **📁 Navigate to the main project directory:**
-   ```bash
-   cd "konami-games-project"
-   ```
-
-3. **🔨 Compile the project:**
-   ```bash
-   # Compile modernized code (recommended)
-   javac -d bin src/com/konami/gaming/*/*.java
-   
-   # Alternative: Compile legacy code
-   javac -d bin src/koanami/pack/*.java
-   ```
-
-4. **✅ Verify compilation:**
-   ```bash
-   # Check that class files were created
-   ls bin/koanami/pack/
-   ```
+The server displays received data in a grid; the client shows server responses in the response panel.
 
 ## 📖 Usage Guide
 
@@ -118,17 +92,14 @@ A robust client-server application that demonstrates XML processing, socket comm
 
 **🚀 Run both client and server together:**
 ```bash
-# Make sure you're in the "konami-games-project" directory
-cd "konami-games-project"
-
 # Compile modernized code first (if not done already)
-javac -d bin src/com/konami/gaming/*/*.java
+mvn compile
 
-# Run the modernized threaded application (recommended)
-java -cp bin com.konami.gaming.common.ThreadRunner
+# Run the application (recommended)
+mvn javafx:run
 
-# Alternative: Run legacy version
-java -cp bin koanami.pack.ThreadRunner
+# Or use build script
+./build.sh run
 ```
 
 This launches both server and client applications in separate threads automatically.
@@ -139,17 +110,14 @@ This launches both server and client applications in separate threads automatica
 
 **� Legacy Individual Execution Only:**
 ```bash
-# Navigate to project directory
-cd "konami-games-project"
-
-# Compile legacy code
-javac -d bin src/koanami/pack/*.java
+# Compile with Maven
+mvn compile
 
 # Run legacy server
-java -cp bin koanami.pack.Main
+java -cp target/classes koanami.pack.Main
 
 # Run legacy client (in new terminal)
-java -cp bin koanami.pack.MainOut
+java -cp target/classes koanami.pack.MainOut
 ```
 
 ### 📋 Step-by-Step Usage
@@ -221,28 +189,25 @@ The server processes the XML and displays:
 
 ```
 komani-gaming-project/
-├── 📁 konami-games-project/           # Main application
-│   ├── 📁 src/com/konami/gaming/      # Modernized source code
+├── src/com/konami/gaming/             # Main application source
 │   │   ├── 📁 common/                 # Shared utilities and constants
 │   │   │   ├── 🎮 ThreadRunner.java   # Multi-threaded launcher
 │   │   │   └── � NetworkConstants.java # Network configuration
-│   │   ├── 📁 server/                 # Server-side components
+│   ├── server/                        # Server-side components
 │   │   │   ├── �️ GUIServer.java      # Server GUI & logic
 │   │   │   ├── 🔌 SocketListener.java  # Server socket handler
 │   │   │   └── � ServerMain.java     # Server entry point
-│   │   ├── 📁 client/                 # Client-side components
+│   ├── client/                        # Client-side components
 │   │   │   ├── � GUIClient.java      # Client GUI & logic
 │   │   │   ├── � ServerConnector.java # Client connection handler
 │   │   │   └── 🚀 ClientMain.java     # Client entry point
 │   │   └── � xml/                    # XML processing
 │   │       └── 📄 XmlProcessor.java   # XML parser & processor
-│   ├── 📁 src/koanami/pack/           # Legacy source code (for reference)
-│   └── 📁 bin/                        # Compiled classes
-├── 📁 konami-games-project-clientside/ # Standalone client
-├── 📁 konami-games-project-serverside/ # Standalone server
-├── 📁 xml-test/                       # XML parsing examples
-├── 🚫 .gitignore                      # Git ignore rules
-└── 📖 README.md                       # This documentation
+├── src/koanami/pack/                  # Legacy source (excluded from build)
+├── pom.xml                            # Maven build config
+├── build.sh                           # Build & run script
+├── .gitignore
+└── README.md
 ```
 
 ## 🔧 Development
@@ -250,23 +215,15 @@ komani-gaming-project/
 ### 🏗️ Building from Source
 
 ```bash
-# Navigate to the main project directory
-cd "konami-games-project"
+# Build with Maven
+mvn compile
 
-# Create bin directory if it doesn't exist
-mkdir -p bin
+# Or use the build script
+./build.sh
 
-# Compile modernized source files (recommended)
-javac -d bin src/com/konami/gaming/*/*.java
-
-# Alternative: Compile legacy source files
-javac -d bin src/koanami/pack/*.java
-
-# Alternative: Compile all Java files recursively
-find src -name "*.java" | xargs javac -d bin
-
-# Verify compilation
-ls -la bin/com/konami/gaming/*/
+# Run the application
+mvn javafx:run
+# Or: ./build.sh run
 ```
 
 ### 🧪 Testing XML Parser
@@ -283,7 +240,7 @@ java -cp bin Main
 
 ### 🐛 Debugging Tips
 
-- **📁 Directory Issues:** Always run commands from "konami-games-project" directory
+- **📁 Directory Issues:** Always run commands from the project root directory
 - **🔌 Port Issues:** Use ports 1024-65535 (avoid system ports)
 - **🌐 Connection Failed:** Check firewall settings and ensure server is running
 - **📄 XML Errors:** Validate XML format with quotes around values
@@ -295,47 +252,23 @@ java -cp bin Main
 ### 🔧 Common Commands Summary
 
 ```bash
-# Quick start with modernized code (from project root)
-cd komani-gaming-project
-cd "konami-games-project"
-javac -d bin src/com/konami/gaming/*/*.java
-java -cp bin com.konami.gaming.common.ThreadRunner
+# Quick start (from project root)
+./build.sh run
+# Or: mvn javafx:run
 
-# ⚠️ Note: Individual modernized components cannot be run standalone
-# They are designed as Runnable classes for the ThreadRunner
-
-# Legacy components (for reference)
-java -cp bin koanami.pack.ThreadRunner  # Legacy threaded app
-java -cp bin koanami.pack.Main          # Legacy server only
-java -cp bin koanami.pack.MainOut       # Legacy client only
+# Build only
+mvn compile
+# Or: ./build.sh
 ```
 
 ### 🚀 Execution Examples
 
-**✅ Correct - Modernized Threaded Application:**
+**✅ Recommended - JavaFX Application:**
 ```bash
-java -cp bin com.konami.gaming.common.ThreadRunner
+mvn javafx:run
+# Or: ./build.sh run
 ```
-Output:
-```
-INFO: Starting Konami Gaming Project - Thread Runner
-INFO: Starting server thread...
-INFO: Starting client thread...
-INFO: Both threads started successfully
-INFO: Client GUI initialized and ready
-INFO: Server GUI initialized and ready
-```
-
-**✅ Correct - Legacy Threaded Application:**
-```bash
-java -cp bin koanami.pack.ThreadRunner
-```
-
-**❌ Incorrect - Individual Modernized Components:**
-```bash
-java -cp bin com.konami.gaming.server.ServerMain
-# Error: Main method not found - use ThreadRunner instead
-```
+This launches both the server and client windows with the JavaFX GUI.
 
 ---
 
