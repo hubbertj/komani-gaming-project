@@ -7,9 +7,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -45,51 +42,41 @@ public class GUIServer {
         stage.setY(80);
 
         startButton = new Button("▶ Start");
-        startButton.setStyle(
-            "-fx-background-color: #10b981; -fx-text-fill: white; -fx-cursor: hand; " +
-            "-fx-background-radius: 6; -fx-padding: 8 16; -fx-font-size: 13; -fx-font-weight: bold;");
+        startButton.getStyleClass().add("start-button");
         startButton.setOnAction(e -> {
             if (validatePortInput()) startServer();
         });
 
         stopButton = new Button("■ Stop");
-        stopButton.setStyle(
-            "-fx-background-color: #ef4444; -fx-text-fill: white; -fx-cursor: hand; " +
-            "-fx-background-radius: 6; -fx-padding: 8 16; -fx-font-size: 13; -fx-font-weight: bold;");
+        stopButton.getStyleClass().add("stop-button");
         stopButton.setDisable(true);
         stopButton.setOnAction(e -> stopServer());
 
         ipField = new TextField();
         ipField.setEditable(false);
         ipField.setPrefWidth(130);
-        ipField.setStyle(
-            "-fx-background-color: #334155; -fx-text-fill: #e2e8f0; -fx-background-radius: 6; " +
-            "-fx-padding: 8 12; -fx-font-family: 'SF Mono', 'Monaco', monospace; -fx-font-size: 12;");
+        ipField.getStyleClass().add("toolbar-field-read-only");
         portField = new TextField(String.valueOf(NetworkConstants.DEFAULT_PORT));
         portField.setPrefWidth(70);
-        portField.setStyle(
-            "-fx-background-color: #334155; -fx-text-fill: #f8fafc; -fx-background-radius: 6; " +
-            "-fx-padding: 8 12; -fx-font-family: 'SF Mono', 'Monaco', monospace; -fx-font-size: 12;");
+        portField.getStyleClass().add("toolbar-field");
         portField.setOnAction(e -> {
             if (validatePortInput()) startServer();
         });
 
         Label ipLbl = new Label("IP");
         Label portLbl = new Label("Port");
-        ipLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11; -fx-font-weight: bold;");
-        portLbl.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11; -fx-font-weight: bold;");
+        ipLbl.getStyleClass().add("toolbar-label");
+        portLbl.getStyleClass().add("toolbar-label");
 
         HBox toolbar = new HBox(16);
         toolbar.setAlignment(Pos.CENTER_LEFT);
         toolbar.setPadding(new Insets(12, 20, 12, 20));
-        toolbar.setStyle(
-            "-fx-background-color: linear-gradient(to bottom, #1e293b, #0f172a); " +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);");
+        toolbar.getStyleClass().add("toolbar");
         Region spacer = new Region();
         spacer.setMinWidth(1);
         spacer.setMaxWidth(1);
         spacer.setPrefHeight(28);
-        spacer.setStyle("-fx-background-color: #475569;");
+        spacer.getStyleClass().add("toolbar-spacer");
 
         toolbar.getChildren().addAll(
             startButton,
@@ -101,18 +88,21 @@ public class GUIServer {
 
         dataCardsBox = new VBox(12);
         dataCardsBox.setPadding(new Insets(20));
-        dataCardsBox.setStyle("-fx-background-color: #f8fafc;");
+        dataCardsBox.getStyleClass().add("data-cards-box");
         ScrollPane scroll = new ScrollPane(dataCardsBox);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: #f8fafc; -fx-background: #f8fafc; -fx-border-width: 0;");
+        scroll.getStyleClass().add("scroll-pane");
         scroll.setPadding(new Insets(0));
 
         VBox root = new VBox(0);
-        root.setStyle("-fx-background-color: #f8fafc;");
+        root.getStyleClass().add("root");
         root.getChildren().addAll(toolbar, scroll);
         VBox.setVgrow(scroll, Priority.ALWAYS);
 
-        stage.setScene(new javafx.scene.Scene(root));
+        javafx.scene.Scene scene = new javafx.scene.Scene(root);
+        String css = getClass().getResource("server-styles.css").toExternalForm();
+        scene.getStylesheets().add(css);
+        stage.setScene(scene);
         stage.setOnCloseRequest(ev -> System.exit(0));
     }
 
@@ -157,16 +147,11 @@ public class GUIServer {
     private VBox createCard(String label, String value) {
         VBox card = new VBox(6);
         card.setPadding(new Insets(16, 20, 16, 20));
-        card.setStyle(
-            "-fx-background-color: white; -fx-background-radius: 10; " +
-            "-fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-border-width: 1; " +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 6, 0, 0, 1);");
+        card.getStyleClass().add("data-card");
         Label labelLbl = new Label(label.toUpperCase());
-        labelLbl.setFont(Font.font("System", FontWeight.BOLD, 11));
-        labelLbl.setTextFill(Color.web("#64748b"));
+        labelLbl.getStyleClass().add("data-card-label");
         Label valueLbl = new Label(value);
-        valueLbl.setFont(Font.font("System", FontWeight.NORMAL, 15));
-        valueLbl.setTextFill(Color.web("#0f172a"));
+        valueLbl.getStyleClass().add("data-card-value");
         card.getChildren().addAll(labelLbl, valueLbl);
         return card;
     }
